@@ -34,7 +34,7 @@ A comprehensive price monitoring application built in Go that tracks product pri
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ShravanBhat/price-watcher
    cd price-watcher
    ```
 
