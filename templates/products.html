@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Price Watcher</h1>
+            <p>Monitor prices across multiple e-commerce platforms</p>
+        </header>
+
+        <nav class="nav">
+            <a href="/" class="nav-link">Add Product</a>
+            <a href="/products" class="nav-link active">View Products</a>
+        </nav>
+
+        <main class="main">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Your Products</h2>
+                    <button id="refreshBtn" class="btn btn-secondary">Refresh All</button>
+                </div>
+                
+                <div id="productsList" class="products-list">
+                    {{if .products}}
+                        {{range .products}}
+                        <div class="product-card" data-id="{{.ID}}">
+                            <div class="product-info">
+                                <h3>{{.Name}}</h3>
+                                <p class="platform">{{.Platform}}</p>
+                                <p class="url">{{.URL}}</p>
+                                <p class="added">Added: {{.CreatedAt.Format "Jan 02, 2006"}}</p>
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn btn-primary scrape-btn" onclick="scrapeProduct('{{.ID}}')">
+                                    Scrape Price
+                                </button>
+                                <button class="btn btn-danger delete-btn" onclick="deleteProduct('{{.ID}}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        {{end}}
+                    {{else}}
+                        <div class="empty-state">
+                            <p>No products added yet.</p>
+                            <a href="/" class="btn btn-primary">Add Your First Product</a>
+                        </div>
+                    {{end}}
+                </div>
+            </div>
+        </main>
+
+        <div id="notification" class="notification hidden"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

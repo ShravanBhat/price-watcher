@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Price Watcher</h1>
+            <p>Monitor prices across multiple e-commerce platforms</p>
+        </header>
+
+        <nav class="nav">
+            <a href="/" class="nav-link active">Add Product</a>
+            <a href="/products" class="nav-link">View Products</a>
+        </nav>
+
+        <main class="main">
+            <div class="card">
+                <h2>Add New Product</h2>
+                <form id="productForm" class="form">
+                    <div class="form-group">
+                        <label for="productName">Product Name</label>
+                        <input type="text" id="productName" name="name" required placeholder="Enter product name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productUrl">Product URL</label>
+                        <input type="url" id="productUrl" name="url" required placeholder="https://amazon.in/product...">
+                        <small class="help-text">Supported platforms: Amazon, Flipkart, Blinkit, Zepto, Instamart, Desidime</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </form>
+            </div>
+
+            <div class="platforms">
+                <h3>Supported Platforms</h3>
+                <div class="platform-grid">
+                    <div class="platform-card">
+                        <div class="platform-icon">🛒</div>
+                        <h4>Amazon</h4>
+                        <p>Monitor Amazon.in prices</p>
+                    </div>
+                    <div class="platform-card">
+                        <div class="platform-icon">📱</div>
+                        <h4>Flipkart</h4>
+                        <p>Track Flipkart deals</p>
+                    </div>
+                    <div class="platform-card">
+                        <div class="platform-icon">⚡</div>
+                        <h4>Blinkit</h4>
+                        <p>Quick grocery prices</p>
+                    </div>
+                    <div class="platform-card">
+                        <div class="platform-icon">🚀</div>
+                        <h4>Zepto</h4>
+                        <p>10-minute delivery prices</p>
+                    </div>
+                    <div class="platform-card">
+                        <div class="platform-icon">🛍️</div>
+                        <h4>Instamart</h4>
+                        <p>Instant grocery prices</p>
+                    </div>
+                    <div class="platform-card">
+                        <div class="platform-icon">🎯</div>
+                        <h4>Desidime</h4>
+                        <p>Best deals & offers</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="notification" class="notification hidden"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

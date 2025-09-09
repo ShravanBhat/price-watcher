@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Price Watcher</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Price Watcher</h1>
+            <p>Monitor prices across multiple e-commerce platforms</p>
+        </header>
+
+        <nav class="nav">
+            <a href="/" class="nav-link">Add Product</a>
+            <a href="/products" class="nav-link">View Products</a>
+        </nav>
+
+        <main class="main">
+            <div class="card error-card">
+                <div class="error-icon">⚠️</div>
+                <h2>Something went wrong</h2>
+                <p class="error-message">{{.error}}</p>
+                <div class="error-actions">
+                    <a href="/" class="btn btn-primary">Go Home</a>
+                    <a href="/products" class="btn btn-secondary">View Products</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

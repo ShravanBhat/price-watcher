@@ -1,0 +1,91 @@
+# Go binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+price-watcher
+price-watcher.exe
+
+# Go test binary
+*.test
+
+# Go coverage output
+*.out
+
+# Go workspace file
+go.work
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+log/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+build/
+dist/
+bin/
+
+# Coverage reports
+coverage.out
+coverage.html
+
+# Configuration files with sensitive data
+config.json
+config.yaml
+config.yml
+secrets.json
+
+# Backup files
+*.bak
+*.backup
+
+# Docker
+docker-compose.override.yml
+
+# Local development
+.local/
+local/
+
+# Cache directories
+.cache/
+cache/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
