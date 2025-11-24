@@ -134,9 +134,22 @@ func (s *Server) deleteProduct(c *gin.Context) {
 		return
 	}
 
-	// Note: This would need a DeleteProduct method in the database
-	// For now, we'll return a not implemented response
-	c.JSON(http.StatusNotImplemented, gin.H{"error": "Delete not implemented yet"})
+	// Delete the product from database
+	err := s.db.DeleteProduct(id)
+	if err != nil {
+		// Check if product was not found
+		if strings.Contains(err.Error(), "product not found") {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Product deleted successfully",
+		"id":      id,
+	})
 }
 
 func (s *Server) manualScrape(c *gin.Context) {

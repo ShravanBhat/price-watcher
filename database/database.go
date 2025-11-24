@@ -13,12 +13,12 @@ type DB struct {
 }
 
 type Product struct {
-	ID          string    `json:"id"`
-	Name        string    `json:"name"`
-	URL         string    `json:"url"`
-	Platform    string    `json:"platform"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	URL       string    `json:"url"`
+	Platform  string    `json:"platform"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type PriceHistory struct {
@@ -108,28 +108,28 @@ func (db *DB) CreateProduct(name, url, platform string) (*Product, error) {
 		VALUES ($1, $2, $3)
 		RETURNING id, name, url, platform, created_at, updated_at
 	`
-	
+
 	var product Product
 	err := db.QueryRow(query, name, url, platform).Scan(
 		&product.ID, &product.Name, &product.URL, &product.Platform, &product.CreatedAt, &product.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to create product: %w", err)
 	}
-	
+
 	return &product, nil
 }
 
 func (db *DB) GetProducts() ([]Product, error) {
 	query := `SELECT id, name, url, platform, created_at, updated_at FROM products ORDER BY created_at DESC`
-	
+
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query products: %w", err)
 	}
 	defer rows.Close()
-	
+
 	var products []Product
 	for rows.Next() {
 		var product Product
@@ -138,7 +138,7 @@ func (db *DB) GetProducts() ([]Product, error) {
 		}
 		products = append(products, product)
 	}
-	
+
 	return products, nil
 }
 
@@ -154,17 +154,17 @@ func (db *DB) GetLowestPriceInPeriod(productID string, days int) (float64, error
 		FROM price_history 
 		WHERE product_id = $1 AND timestamp >= NOW() - INTERVAL '1 day' * $2
 	`
-	
+
 	var lowestPrice sql.NullFloat64
 	err := db.QueryRow(query, productID, days).Scan(&lowestPrice)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get lowest price: %w", err)
 	}
-	
+
 	if !lowestPrice.Valid {
 		return 0, nil
 	}
-	
+
 	return lowestPrice.Float64, nil
 }
 
@@ -176,17 +176,17 @@ func (db *DB) GetLatestPrice(productID string) (float64, error) {
 		ORDER BY timestamp DESC 
 		LIMIT 1
 	`
-	
+
 	var price sql.NullFloat64
 	err := db.QueryRow(query, productID).Scan(&price)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get latest price: %w", err)
 	}
-	
+
 	if !price.Valid {
 		return 0, nil
 	}
-	
+
 	return price.Float64, nil
 }
 
@@ -198,13 +198,13 @@ func (db *DB) CreateAlert(productID string, oldPrice, newPrice float64, currency
 
 func (db *DB) GetProductsByPlatform(platform string) ([]Product, error) {
 	query := `SELECT id, name, url, platform, created_at, updated_at FROM products WHERE platform = $1`
-	
+
 	rows, err := db.Query(query, platform)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query products by platform: %w", err)
 	}
 	defer rows.Close()
-	
+
 	var products []Product
 	for rows.Next() {
 		var product Product
@@ -213,6 +213,26 @@ func (db *DB) GetProductsByPlatform(platform string) ([]Product, error) {
 		}
 		products = append(products, product)
 	}
-	
+
 	return products, nil
+}
+
+func (db *DB) DeleteProduct(productID string) error {
+	query := `DELETE FROM products WHERE id = $1`
+
+	result, err := db.Exec(query, productID)
+	if err != nil {
+		return fmt.Errorf("failed to delete product: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("product not found: %s", productID)
+	}
+
+	return nil
 }
