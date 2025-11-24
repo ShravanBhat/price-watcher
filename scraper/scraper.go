@@ -23,7 +23,7 @@ func NewBaseScraper() *BaseScraper {
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"),
 		colly.AllowURLRevisit(),
 	)
-	
+
 	return &BaseScraper{collector: c}
 }
 
@@ -50,7 +50,7 @@ func (a *AmazonScraper) ScrapePrice(url string) (float64, error) {
 		// Avoid overwriting if multiple similar elements are found.
 		if !priceFound {
 			rawPrice := e.Text
-			
+
 			// Use a regular expression to remove any non-digit characters (like commas).
 			re := regexp.MustCompile(`[^\d]`)
 			productPrice = re.ReplaceAllString(rawPrice, "")
@@ -61,7 +61,6 @@ func (a *AmazonScraper) ScrapePrice(url string) (float64, error) {
 		return 0, fmt.Errorf("failed to visit Amazon URL: %w", err)
 	}
 	price, err = strconv.ParseFloat(productPrice, 64)
-
 
 	if price == 0 {
 		return 0, fmt.Errorf("price not found on Amazon page")
@@ -87,7 +86,7 @@ func (f *FlipkartScraper) ScrapePrice(url string) (float64, error) {
 	var price float64
 	var err error
 
-	f.collector.OnHTML("div._30jeq3._16Jk6d", func(e *colly.HTMLElement) {
+	f.collector.OnHTML("div.Nx9bqj.CxhGGd", func(e *colly.HTMLElement) {
 		priceText := strings.ReplaceAll(strings.TrimPrefix(e.Text, "₹"), ",", "")
 		price, err = strconv.ParseFloat(priceText, 64)
 	})
@@ -244,7 +243,7 @@ func NewScraperFactory() *ScraperFactory {
 
 func (sf *ScraperFactory) GetScraper(url string) (Scraper, error) {
 	url = strings.ToLower(url)
-	
+
 	switch {
 	case strings.Contains(url, "amazon"):
 		return NewAmazonScraper(), nil
@@ -268,16 +267,16 @@ func ExtractPriceFromText(text string) (float64, error) {
 	// Regex to find price patterns like ₹1,999 or 1999
 	re := regexp.MustCompile(`[₹]?([0-9,]+(?:\.[0-9]{2})?)`)
 	matches := re.FindStringSubmatch(text)
-	
+
 	if len(matches) < 2 {
 		return 0, fmt.Errorf("no price found in text: %s", text)
 	}
-	
+
 	priceStr := strings.ReplaceAll(matches[1], ",", "")
 	price, err := strconv.ParseFloat(priceStr, 64)
 	if err != nil {
 		return 0, fmt.Errorf("failed to parse price: %w", err)
 	}
-	
+
 	return price, nil
 }
