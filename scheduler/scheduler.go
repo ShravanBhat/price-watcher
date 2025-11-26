@@ -69,7 +69,7 @@ func (s *Scheduler) scrapeAllProducts() {
 	}
 
 	// Create worker pool for concurrent scraping
-	workerCount := 5
+	workerCount := s.config.WorkerPoolSize
 	productChan := make(chan database.Product, len(products))
 
 	// Start workers
@@ -130,8 +130,15 @@ func (s *Scheduler) scrapeProductPrice(product database.Product) {
 		log.Printf("Failed to check/send alert for %s: %v", product.ID, err)
 	}
 
+	// Calculate delta
+	var delta float64
+	previousPrice, err := s.db.GetLatestPrice(product.ID)
+	if err == nil && previousPrice != 0 {
+		delta = currentPrice - previousPrice
+	}
+
 	// Add price to history
-	if err := s.db.AddPriceHistory(product.ID, currentPrice, "INR"); err != nil {
+	if err := s.db.AddPriceHistory(product.ID, currentPrice, delta, "INR"); err != nil {
 		log.Printf("Failed to add price history for %s: %v", product.ID, err)
 		return
 	}

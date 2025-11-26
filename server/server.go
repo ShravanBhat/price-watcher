@@ -195,8 +195,15 @@ func (s *Server) manualScrape(c *gin.Context) {
 		return
 	}
 
+	// Calculate delta
+	var delta float64
+	previousPrice, err := s.db.GetLatestPrice(targetProduct.ID)
+	if err == nil && previousPrice != 0 {
+		delta = price - previousPrice
+	}
+
 	// Add to price history
-	if err := s.db.AddPriceHistory(targetProduct.ID, price, "INR"); err != nil {
+	if err := s.db.AddPriceHistory(targetProduct.ID, price, delta, "INR"); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

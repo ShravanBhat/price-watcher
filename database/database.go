@@ -76,6 +76,7 @@ func initTables(db *sql.DB) error {
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 			product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
 			price DECIMAL(10,2) NOT NULL,
+			delta DECIMAL(10,2) DEFAULT 0,
 			currency VARCHAR(3) DEFAULT 'INR',
 			timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		)`,
@@ -142,9 +143,9 @@ func (db *DB) GetProducts() ([]Product, error) {
 	return products, nil
 }
 
-func (db *DB) AddPriceHistory(productID string, price float64, currency string) error {
-	query := `INSERT INTO price_history (product_id, price, currency) VALUES ($1, $2, $3)`
-	_, err := db.Exec(query, productID, price, currency)
+func (db *DB) AddPriceHistory(productID string, price float64, delta float64, currency string) error {
+	query := `INSERT INTO price_history (product_id, price, delta, currency) VALUES ($1, $2, $3, $4)`
+	_, err := db.Exec(query, productID, price, delta, currency)
 	return err
 }
 

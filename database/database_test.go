@@ -131,6 +131,38 @@ func TestCreateAndGetProduct(t *testing.T) {
 	}
 }
 
+func TestAddPriceHistory(t *testing.T) {
+	db := getTestDB(t)
+	defer db.Close()
+
+	// Create a test product
+	product, err := db.CreateProduct("Price History Test Product", "https://www.amazon.in/test-price-history", "amazon")
+	if err != nil {
+		t.Fatalf("Failed to create test product: %v", err)
+	}
+	defer db.DeleteProduct(product.ID)
+
+	// Add price history with delta
+	price := 1000.00
+	delta := -50.00
+	err = db.AddPriceHistory(product.ID, price, delta, "INR")
+	if err != nil {
+		t.Fatalf("AddPriceHistory() error = %v", err)
+	}
+
+	// Verify the price history was added
+	// We need to query the database directly or add a GetPriceHistory method to DB for testing
+	// For now, let's use GetLatestPrice to verify at least the price
+	latestPrice, err := db.GetLatestPrice(product.ID)
+	if err != nil {
+		t.Fatalf("GetLatestPrice() error = %v", err)
+	}
+
+	if latestPrice != price {
+		t.Errorf("GetLatestPrice() = %v, want %v", latestPrice, price)
+	}
+}
+
 // Helper function to check if a string contains a substring
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(substr) == 0 ||
